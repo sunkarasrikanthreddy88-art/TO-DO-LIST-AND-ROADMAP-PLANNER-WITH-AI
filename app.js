@@ -1,9 +1,3 @@
-/**
- * AuraTask AI - Task Planner & Roadmap Tracker
- * Core Application Logic (Server/Database Synced)
- */
-
-// Application State
 let state = {
   tasks: [],
   settings: {
@@ -13,12 +7,8 @@ let state = {
   filter: 'all',
   searchQuery: ''
 };
-
-// SVG Progress Ring Constants
 const RING_RADIUS = 16;
-const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS; // ~100.53px
-
-// DOM Elements Cache
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 const elements = {
   themeToggle: document.getElementById('theme-toggle'),
   btnSettings: document.getElementById('btn-settings'),
@@ -68,18 +58,12 @@ const elements = {
 // Initialize Application
 async function init() {
   setupEventListeners();
-  
-  // Set SVG Dasharray
   if (elements.progressCircle) {
     elements.progressCircle.style.strokeDasharray = `${RING_CIRCUMFERENCE} ${RING_CIRCUMFERENCE}`;
   }
-
-  // Load theme from client storage, and settings/tasks from server
   loadThemePreference();
   await syncWithDatabase();
 }
-
-// Theme Preferences
 function loadThemePreference() {
   const savedTheme = localStorage.getItem('auratask_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -87,11 +71,8 @@ function loadThemePreference() {
     elements.themeToggle.checked = (savedTheme === 'light');
   }
 }
-
-// Database Connection Helpers
 async function syncWithDatabase() {
   try {
-    // Parallel load tasks & settings
     const [tasksRes, settingsRes] = await Promise.all([
       fetch('/api/tasks'),
       fetch('/api/settings')
@@ -114,9 +95,6 @@ async function syncWithDatabase() {
     showToast("Server connection failed. Working in offline mock mode.", "danger");
   }
 }
-
-
-// Setup Event Handlers
 function setupEventListeners() {
   // Theme Switcher
   if (elements.themeToggle) {
@@ -159,13 +137,9 @@ function setupEventListeners() {
       }
     });
   }
-  
-  // Test Gemini key connection
   if (elements.btnTestKey) {
     elements.btnTestKey.addEventListener('click', testAPIKey);
   }
-  
-  // Add Task Modals
   if (elements.btnAddTaskModal) {
     elements.btnAddTaskModal.addEventListener('click', () => openTaskModal());
   }
@@ -190,8 +164,6 @@ function setupEventListeners() {
   if (elements.btnGenerateAI) {
     elements.btnGenerateAI.addEventListener('click', handleAIGeneration);
   }
-  
-  // Roadmap Importer Controls
   if (elements.btnLoadRoadmap) {
     elements.btnLoadRoadmap.addEventListener('click', async () => {
       if (state.tasks.length > 0) {
